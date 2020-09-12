@@ -1,58 +1,67 @@
-// from data.js
-var ufoData = data;
+var ufoData = data; // Bring in the data from data.js
+
+var button = d3.select("#filter-btn"); // Select the button
+var form = d3.select("#form"); // Select the form
+var tbody = d3.select("tbody"); // Select the table body
+var error = d3.select("#error_message"); // Select error message area
 
 /**
- * Select everything needed
- * ADD DOCUMENTATION
+ * Format table data.
+ * 
+ * This formats the data filled into the html table based on key type.
+ * State and country are all uppercased. 
+ * City names get initial capped based on first char, char following a space, and char following an open paren.
+ * 
+ * @param {string} key - Column from the data. Can be datetime, city, state, country, shape, durationMinutes, or comments
+ * @param {string} value - Data value associated with each of the keys.
  * 
  */
-// Select the button
-var button = d3.select("#filter-btn");
+function fixValueFormatting(key, value){
+    
+    // Capitalize the state and countries, since they're both intialisms.
+    if (key === "state" || key === "country"){
+        value = value.toUpperCase();
+    };
+   
+    /*
+     * Capitalize city names.
+     * Adapted solution from StackOverflow users: nimeresam & Cristian Traìna.
+     * Source:
+     * https://stackoverflow.com/questions/32589197/how-can-i-capitalize-the-first-letter-of-each-word-in-a-string-using-javascript
+     */
+    if (key === "city"){
+        value = value.replace(/(^\w{1})|(\s+\w{1})|(\(\w{1})/g, match => match.toUpperCase());
+    };
 
-// Select the form
-var form = d3.select("#form");
+    // Add handler to clean up the data in duration column
+    if (key === "duration"){
+        value = value;
+    };
 
-// Select the table body
-var tbody = d3.select("tbody");
+    // Add handler to clean up the data in comments column
+    if (key === "comments"){
+        value = value;
+    };
+
+    return value;
+};
 
 /**
- * INITIAL STATE
- * ADD DOCUMENTATION
+ * Initial state - shows all data.
  * 
- * 
+ * This is the default state and shows all of the data found in data.js.
+ * It clears the table, then adds new rows, cells, and cell values for the data.
  */
 function init(){
-    // Dynamically fill in the table from data.js
-    ufoData.forEach((ufoSightings) => {
+    tbody.html(""); // Clear the table
     
-        // Check output
-        //console.log(ufoSightings)
-        var row = tbody.append("tr");
+    ufoData.forEach((ufoSightings) => {
+        var row = tbody.append("tr"); // Add a row to the table for each iteration
 
         Object.entries(ufoSightings).forEach(([key, value]) => {
-            // Check output
-            //console.log(key, value);
-
-            // Make the table data standardized (format it)
-            if (key === "state" || key === "country"){
-                value = value.toUpperCase();
-            };
-
-            // Capitalize city names
-            // Solution from StackOverflow users nimeresam and Cristian Traìna
-            // Source:
-            // https://stackoverflow.com/questions/32589197/how-can-i-capitalize-the-first-letter-of-each-word-in-a-string-using-javascript
-            if (key === "city"){
-                value = value.replace(/(^\w{1})|(\s+\w{1})/g, match => match.toUpperCase());
-            };
-
-            // Add handler to clean up the data in duration and comments columns
-
-            // Make a new row for each entry
-            var cell = row.append("td");
-            
-            // Fill in cell values
-            cell.text(value);
+            var cell = row.append("td"); // Make a new cell for each entry
+            value = fixValueFormatting(key, value); // Call function to format values
+            cell.text(value); // Fill in cell values
         });
     });
 };
@@ -62,62 +71,77 @@ button.on("click", filterSearch);
 form.on("submit", filterSearch);
 
 /**
- * Handle the Enter button being pressed
+ * Handle Enter being pressed.
+ * 
+ * Connects to input class="form-control" in index.html.
+ * 
+ * @param {event} e - Event
+ * 
  * Adapted from StackOverflow user TryingToImprove
  * Source: https://stackoverflow.com/questions/13987300/how-to-capture-enter-key-press
  * Combined with: https://keycode.info
  */
-function handle(e){
+function handleEnter(e){
     if(e.key === "Enter"){
         e.preventDefault(); // Prevent page from refreshing
         filterSearch(); // Call filterSearch function
     };
 };
 
-// Filter the results, based on date in input field
+/**
+ * Filter the results, based on date in input field.
+ * 
+ * 
+ */
 function filterSearch(){
+    
+    error.text(""); // Proactively clear the error text area.
 
-    // Prevent page from refreshing
+    /*
+     * If the event isn't null, then prevent default refresh.
+     * This works hand-in-hand with handleEnter function.
+     */
     if (!d3.event == null){
         d3.event.preventDefault();
     };
     
-    /**
-     * Select the input element
-     * Get raw HTML node
-     * Get the value
-     */
+    // Select the input element, get raw HTML node, then get the value.
     var inputElement = d3.select(".form-control");
     var inputValue = inputElement.property("value");
 
-    // Check output (uncomment to see)
-    //console.log(inputValue);
-    //console.log(ufoData);
+    // If nothing is entered, return the default state.
+    if (inputValue === ""){
+        init();
+        return;
+    };
 
-    // Filter the data
-    var filteredData = ufoData.filter(ufoData => ufoData.datetime === inputValue);
+    // Filter the data into a new array.
+    var filteredData = ufoData.filter(ufoData => ufoData.datetime === inputValue);  
 
-    // Check final output before writing to page (uncomment to see)
-    //console.log(filteredData);
+    // If the array is undefined or empty, print an error message on the site.
+    if (filteredData === undefined || filteredData.length == 0) {
+        tbody.html(""); // Clear the table to fill with new values
+        error.text("No matches found. Try again. I believe in you."); // Print error on site
+    }
 
-    // Clear the table to fill with new values
-    tbody.html("");
+    /*
+     * If the array isn't empty, then a match has been found.
+     * Clear the table and fill with the filtered data.
+     */ 
+    else{
+        tbody.html(""); // Clear the table
 
-    filteredData.forEach((ufoSightingsFiltered) => {
-        var row = tbody.append("tr"); // Add a row to the table per 
+        filteredData.forEach((ufoSightingsFiltered) => {
+            var row = tbody.append("tr"); // Add a row to the table for each iteration
 
-        Object.entries(ufoSightingsFiltered).forEach(function([key, value]) {
-            /*console.log(key, value);*/
-            // Make a new row for each entry
-            var cell = row.append("td");
-            // Fill in cell values
-            cell.text(value);
+            Object.entries(ufoSightingsFiltered).forEach(([key, value]) => {
+                var cell = row.append("td"); // Make a new cell for each entry
+                value = fixValueFormatting(key, value); // Call function to format values
+                cell.text(value); // Fill in cell values
+            });
         });
-
-
-    }); 
+    };
 };
 
-
-// Load default state = show all
-init();
+// Load default state and show all data.
+init(); 
