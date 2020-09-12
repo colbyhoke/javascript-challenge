@@ -1,5 +1,10 @@
 # javascript-challenge
 
+#### TL;DR:
+The results are here:
+https://colbyhoke.github.io/javascript-challenge/UFO-level-1/
+https://colbyhoke.github.io/javascript-challenge/UFO-level-2/
+
 #### The assignment was completed in two levels:
 * Level 1 filters the data based on a user-input date.
 * Level 2 filters the data based on user input in conjunction with a dropdown to filter by 5 fields:
