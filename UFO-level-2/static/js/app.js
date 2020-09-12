@@ -3,15 +3,15 @@
  * UNC Data Analytics Bootcamp
  * September 2020
  * 
- * UFO-level-1
+ * UFO-level-2
  */
 
 var ufoData = data; // Bring in the data from data.js
 
-// Select html attributes
 var button = d3.select("#filter-btn"); // Select the search button
 var form = d3.select("#form"); // Select the form
 var tbody = d3.select("tbody"); // Select the table body
+var thead = d3.select("thead"); // Select the table head (for error cases)
 var error = d3.select("#error_message"); // Select error message area
 
 // Event handlers to filter search
@@ -31,8 +31,8 @@ form.on("submit", filterSearch);
  */
 function fixValueFormatting(key, value){
     
-    // Capitalize the state and countries, since they're both intialisms.
-    if (key === "state" || key === "country"){
+    // Capitalize the state and countries, since they're both initialisms.
+    if (key == "state" || key == "country"){
         value = value.toUpperCase();
     };
    
@@ -42,17 +42,17 @@ function fixValueFormatting(key, value){
      * Source:
      * https://stackoverflow.com/questions/32589197/how-can-i-capitalize-the-first-letter-of-each-word-in-a-string-using-javascript
      */
-    if (key === "city"){
+    if (key == "city"){
         value = value.replace(/(^\w{1})|(\s+\w{1})|(\(\w{1})/g, match => match.toUpperCase());
     };
 
     // Add handler to clean up the data in duration column
-    if (key === "duration"){
+    if (key == "durationMinutes"){
         value = value;
     };
 
     // Add handler to clean up the data in comments column
-    if (key === "comments"){
+    if (key == "comments"){
         value = value;
     };
 
@@ -66,15 +66,15 @@ function fixValueFormatting(key, value){
  * It clears the table, then adds new rows, cells, and cell values for the data.
  */
 function init(){
-    tbody.html(""); // Clear the table
+    tbody.html("");  // Clear the table
     
     ufoData.forEach((ufoSightings) => {
-        var row = tbody.append("tr"); // Add a row to the table for each iteration
+        var row = tbody.append("tr");  // Add a row to the table for each iteration
 
         Object.entries(ufoSightings).forEach(([key, value]) => {
-            var cell = row.append("td"); // Make a new cell for each entry
-            value = fixValueFormatting(key, value); // Call function to format values
-            cell.text(value); // Fill in cell values
+            var cell = row.append("td");  // Make a new cell for each entry
+            value = fixValueFormatting(key, value);  // Call function to format values
+            cell.text(value);  // Fill in cell values
         });
     });
 };
@@ -92,16 +92,18 @@ function init(){
  */
 function handleEnter(e){
     if(e.key === "Enter"){
-        e.preventDefault(); // Prevent page from refreshing
-        filterSearch(); // Call filterSearch function
+        e.preventDefault();  // Prevent page from refreshing
+        filterSearch();  // Call filterSearch function
     };
 };
 
 /**
- * Filters the results, based on date in input field.
+ * Filters the results, based on input field and dropdown.
+ * 
+ * 
  */
 function filterSearch(){
-    
+
     error.text(""); // Proactively clear the error text area.
 
     /*
@@ -116,19 +118,44 @@ function filterSearch(){
     var inputElement = d3.select(".form-control");
     var inputValue = inputElement.property("value");
 
+    // All of the data is lowercase, so lowercase anything entered for filter comparison
+    inputValue = inputValue.toLowerCase();
+
     // If nothing is entered, return the default state.
     if (inputValue === ""){
         init();
         return;
     };
 
-    // Filter the data into a new array.
-    var filteredData = ufoData.filter(sighting => sighting.datetime === inputValue);  
+    /*
+     * Grab the dropdown selection to search by different fields.
+     * The following switch handles each field and subsequent filter.
+     */
+    var dropdownSelection = d3.select("#dropdownMenu").property("value");
+    
+    switch (dropdownSelection){
+        case "datetime":
+            var filteredData = ufoData.filter(sighting => sighting.datetime == inputValue);
+            break;
+        case "city":
+            var filteredData = ufoData.filter(sighting => sighting.city == inputValue);
+            break;
+        case "state":
+            var filteredData = ufoData.filter(sighting => sighting.state == inputValue);
+            break;
+        case "country":
+            var filteredData = ufoData.filter(sighting => sighting.country == inputValue);
+            break;
+        case "shape":
+            var filteredData = ufoData.filter(sighting => sighting.shape == inputValue);
+            break;        
+    }
 
-    // If the array is undefined or empty, print an error message on the site.
+    // If the filteredData array is undefined or empty, print an error message on the site.
     if (filteredData === undefined || filteredData.length == 0) {
-        tbody.html(""); // Clear the table to fill with new values
-        error.text("No matches found. Try again. I believe in you."); // Print error on site
+        tbody.html("");  // Clear the table body
+        thead.html("");  // Clear the table head
+        error.text("No matches found. Try again.  I believe in you...(And aliens.)");  // Print error on site
     }
 
     /*
@@ -139,16 +166,16 @@ function filterSearch(){
         tbody.html(""); // Clear the table
 
         filteredData.forEach((ufoSightingsFiltered) => {
-            var row = tbody.append("tr"); // Add a row to the table for each iteration
+            var row = tbody.append("tr");  // Add a row to the table for each iteration
 
             Object.entries(ufoSightingsFiltered).forEach(([key, value]) => {
-                var cell = row.append("td"); // Make a new cell for each entry
-                value = fixValueFormatting(key, value); // Call function to format values
-                cell.text(value); // Fill in cell values
+                var cell = row.append("td");  // Make a new cell for each entry
+                value = fixValueFormatting(key, value);  // Call function to format values
+                cell.text(value);  // Fill in cell values
             });
         });
     };
 };
 
-// Load default state and show all data.
+// Load default state.
 init(); 

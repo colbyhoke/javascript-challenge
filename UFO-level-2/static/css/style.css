@@ -70,7 +70,7 @@ select {
   width: 100%;
   padding: 8px;
   color: #8e979f;
-  outline: none;
+  outline: white;
 }
 
 #table-area th {
@@ -94,24 +94,25 @@ select {
 /* The styles for the parallax */
 .hero {
   position: relative;
-  height: 550px;
+  height: 350px;
   padding: 20px;
   margin: 0;
   background: black;
-  background-image: url("../images/nasa.jpg");
+  background-image: url("../images/aliens.jpg");
   background-attachment: fixed;
   background-position: bottom center;
   background-size: cover;
 }
 
 .hero h1 {
-  margin-top: 200px;
-  font-size: 0.1rem;
+  margin-top: 100px;
+  font-size: 20px;
   animation: title 1.2s forwards linear;
 }
 
 .hero p {
-  font-size: 2rem;
+  font-size: 60px;
+  text-shadow: 0 0 5px black;
   opacity: 0;
   animation: subtitle 1.2s forwards linear;
   animation-delay: 1.2s;
@@ -136,6 +137,14 @@ select {
 .form-control:-moz-placeholder {
   /* Firefox 18- */
   color: #8e979f;
+}
+
+.btn {
+  
+  background-color: #4CAF50;
+  border-radius: 12px;
+  border: 1px solid white;
+  color: white;
 }
 
 /* media queries which will only be activated at specific screen sizes */
@@ -198,7 +207,7 @@ select {
   }
 
   to {
-    font-size: 7.5rem;
+    font-size: 30px;
     opacity: 1;
   }
 }
