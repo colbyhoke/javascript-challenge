@@ -1,9 +1,8 @@
 # javascript-challenge
 
 #### TL;DR:
-The results are here:
-
-https://colbyhoke.github.io/javascript-challenge/UFO-level-1/
+The results are here:<br>
+https://colbyhoke.github.io/javascript-challenge/UFO-level-1/<br>
 https://colbyhoke.github.io/javascript-challenge/UFO-level-2/
 
 #### The assignment was completed in two levels:
