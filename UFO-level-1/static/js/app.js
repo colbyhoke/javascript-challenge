@@ -46,16 +46,6 @@ function fixValueFormatting(key, value){
         value = value.replace(/(^\w{1})|(\s+\w{1})|(\(\w{1})/g, match => match.toUpperCase());
     };
 
-    // Add handler to clean up the data in duration column
-    if (key === "duration"){
-        value = value;
-    };
-
-    // Add handler to clean up the data in comments column
-    if (key === "comments"){
-        value = value;
-    };
-
     return value;
 };
 
