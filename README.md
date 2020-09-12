@@ -11,5 +11,5 @@ You can handle this... right? The planet Earth needs to know what we have found!
 ### 
 
 ![level 1 screenshot](screenshots/ufo_finder_l1.jpg)
-![level 2 screenshot](screenshots/ufo_finder_l12.jpg)
+![level 2 screenshot](screenshots/ufo_finder_l2.jpg)
 ![level 2 filter screenshot](screenshots/ufo_finder_l2_filter.jpg)
