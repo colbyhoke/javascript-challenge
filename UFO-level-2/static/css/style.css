@@ -41,6 +41,8 @@ body {
 .navbar {
   padding: 5px;
   margin: 0;
+  background-color: darkgreen;
+  text-shadow: 0 0 5px black;
 }
 
 /* This CSS styles the ufo icon in the navbar */
@@ -140,11 +142,11 @@ select {
 }
 
 .btn {
-  
-  background-color: #4CAF50;
+  background-color: darkgreen;
   border-radius: 12px;
   border: 1px solid white;
   color: white;
+  text-shadow: 0 0 5px black;
 }
 
 /* media queries which will only be activated at specific screen sizes */

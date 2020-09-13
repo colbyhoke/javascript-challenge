@@ -14,10 +14,11 @@ https://colbyhoke.github.io/javascript-challenge/UFO-level-2/
     * country
     * shape
 
-I did some extra handling:
-* Let the enter key be a form submit
+I did a little extra handling:
+* Make the enter key be a form submit
 * Format the city, state, and country values to look better
-* If nothing is entered, then return the default state
+* Replaced some html characters with the correct english characters that made it into the comments strings
+* If nothing is entered, return the default state
 * If no matches are found, alert the user and clear any evidence of a table
 
 

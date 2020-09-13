@@ -24,6 +24,7 @@ form.on("submit", filterSearch);
  * This formats the data filled into the html table based on key type.
  * State and country are all uppercased. 
  * City names get initial capped based on first char, char following a space, and char following an open paren.
+ * Comments section gets some html characters replaced with correct characters
  * 
  * @param {string} key - Column from the data. Can be datetime, city, state, country, shape, durationMinutes, or comments
  * @param {string} value - Data value associated with each of the keys.
@@ -44,6 +45,15 @@ function fixValueFormatting(key, value){
      */
     if (key == "city"){
         value = value.replace(/(^\w{1})|(\s+\w{1})|(\(\w{1})/g, match => match.toUpperCase());
+    };
+
+    // Fix html characters that made it into the comments strings
+    if (key == "comments"){
+        value = value.replace(/(&#44)/g, ",");
+        value = value.replace(/(&#39)/g, "'");
+        value = value.replace(/(&#33)/g, ".");
+        value = value.replace(/(&amp;)/g, "&");
+        value = value.replace(/(&quot;)/g, '"');
     };
 
     return value;
